@@ -1,15 +1,15 @@
 <?php
-namespace Globals\Classes\App;
+namespace Globals\Classes\App\Db;
 abstract class Model
 {
     private $fields = [];
-    private $tableName;
+    protected $tableName;
     protected $db;
 
-    public function __construct(array $fields)
+    public function __construct(\Db $db)
     {
         $this->initFields($fields);
-        $this->db = \App::getApp()->getDb();
+        $this->db = $db;
     }
 
     public function get($id)

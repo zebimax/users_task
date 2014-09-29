@@ -7,5 +7,5 @@ function get_global_config($configKey, $default = null)
 
 function translate($key, $default = '')
 {
-    $db = App::getApp()
+    $db = App::getApp()->getDb();
 }
