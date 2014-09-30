@@ -8,9 +8,10 @@ class AutoLoader
 
     public function loadClass($class)
     {
-        $filename = __DIR__ . $class . 'php';
+        $className = str_replace('\\', DIRECTORY_SEPARATOR, $class);
+        $filename = __DIR__ . DIRECTORY_SEPARATOR . $className . '.php';
         if (file_exists($filename)) {
-            include $filename;
+            include_once($filename);
         };
     }
 

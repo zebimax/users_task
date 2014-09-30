@@ -1,6 +1,8 @@
 <?php
-
+namespace Globals\Classes;
+use Globals\Classes\App\Db\ModelsFactory;
 use Globals\Classes\Exceptions\Db\BadConfigException;
+use PDO;
 
 class Db
 {
@@ -33,7 +35,7 @@ class Db
 
     private static function getDbConfig($configKey, array $configs)
     {
-        $value = !isset($configs[$configKey]) ? $configs[$configKey] : null;
+        $value = isset($configs[$configKey]) ? $configs[$configKey] : null;
 
         if (!$value && $configKey !== 'password') {
             throw new BadConfigException($configKey);
@@ -41,13 +43,33 @@ class Db
         return $value;
     }
 
+    /**
+     * @param $modelName
+     * @return \Globals\Classes\App\Db\AbstractModel
+     * @throws \Globals\Classes\Exceptions\Db\BadModelException
+     */
     public function getModel($modelName)
     {
-
+        return ModelsFactory::create($modelName, $this);
     }
 
-    public function query($query)
+    public function getQuery($query)
     {
-        return $this->connection->query($query);
+        return $this->connection->prepare($query);
     }
-} 
+
+    public function execute($query, $params = [], $fetchStyle = PDO::FETCH_ASSOC)
+    {
+        $PDOStatement = $this->connection->prepare($query);
+        $PDOStatement->execute($params);
+        return $PDOStatement->fetch($fetchStyle);
+    }
+
+    /**
+     * @return Pdo
+     */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+}

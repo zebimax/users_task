@@ -1,11 +1,9 @@
 <?php
 namespace Globals\Classes\Exceptions\Db;
 
-class BadConfigException extends \Exception
+use Globals\Classes\Exceptions\AppException;
+
+class BadConfigException extends AppException
 {
-    public function __construct($configKey)
-    {
-        $this->message = sprintf('Bad or not exists %s configuration value for db connection', $configKey);
-        parent::__construct($this->message);
-    }
-} 
+    protected $messageTpl = 'Bad or not exists %s configuration value for db connection';
+}

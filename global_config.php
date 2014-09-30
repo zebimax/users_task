@@ -17,5 +17,6 @@ return [
         'user' => 'root',
         'password' => '',
         'db_name' => 'test'
-    ]
+    ],
+    'strict_locales' => false
 ];
