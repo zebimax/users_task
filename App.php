@@ -1,6 +1,8 @@
 <?php
 
 use Globals\Classes\App\Identity;
+use Globals\Classes\App\Renderer;
+use Globals\Classes\App\Route;
 use Globals\Classes\Db;
 use Models\Users;
 
@@ -8,9 +10,6 @@ class App
 {
     /** @var Db */
     private $db;
-    private $header;
-    private $footer;
-    private $content;
     private $configs = [];
 
     private $post = [];
@@ -18,15 +17,10 @@ class App
     private $files = [];
     private $session = [];
 
-    private $controller;
-    private $action;
-
-    private $viewMap = [
-        'header'=> '',
-        'content' => '',
-        'footer' => ''
-    ];
-
+    /** @var Route */
+    private $route;
+    /** @var Renderer */
+    private $renderer;
     /** @var Identity */
     private $identity;
 
@@ -55,7 +49,8 @@ class App
     {
         $this->initIdentity();
         $this->initRouting();
-        $this->initContent();
+        $this->initRendering();
+        $this->render();
     }
 
     public function getConfigs()
@@ -77,17 +72,12 @@ class App
         return $this->identity;
     }
 
-    private function initContent()
+    private function initRendering()
     {
-        $array = [
-            'header' => 'views/header.php',
-            'content' => '',
-            'footer' => 'views/footer.php'
-        ];
-
-        $this->viewMap['content'] = ($this->controller && $this->action)
-            ? $this->controller->$this->action($this->post, $this->get, $this->files)
-            : include 'views/notfound.php';
+//        $result = ($this->controller && $this->action)
+//            ? $this->controller->$this->action($this->post, $this->get, $this->files)
+//            : include 'views/notfound.php';
+        $this->renderer = new Renderer($this->route);
     }
 
     private function initGlobals()
@@ -101,16 +91,21 @@ class App
 
     private function render()
     {
-        ob_start();
-        foreach($this->viewMap as $view){
-            include $view;
-        }
-        echo ob_get_clean();
+        $this->renderer->render();
+//        ob_start();
+//        foreach($this->viewMap as $view){
+//            include $view;
+//        }
+//        echo ob_get_clean();
     }
 
     private function initRouting()
     {
-
+        $this->route = new Route(
+            $_SERVER['REQUEST_URI'],
+            $this->getConfig('routes'),
+            $this->getConfig('modules')
+        );
     }
 
     private function initIdentity()

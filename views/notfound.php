@@ -1,11 +1,1 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: ajax
- * Date: 9/29/14
- * Time: 2:29 PM
- */
-
-class notfound {
-
-} 
+<p class="not_found_msg"><?php echo translate(get_global_config('not_found_message'))?></p>
