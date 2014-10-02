@@ -49,6 +49,7 @@ class App
     {
         $this->initIdentity();
         $this->initRouting();
+        $this->createResponse();
         $this->initRendering();
         $this->render();
     }
@@ -119,6 +120,13 @@ class App
     private function initDb()
     {
         $this->db = Db::getDb($this->getConfig('db'));
+    }
+
+    private function createResponse()
+    {
+        new ResponseManager(
+            $this->route->getController()
+        );
     }
 
     public function getConfig($configKey, $default = null)
